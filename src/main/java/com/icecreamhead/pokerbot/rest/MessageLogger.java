@@ -23,7 +23,7 @@ public class MessageLogger implements ReaderInterceptor, WriterInterceptor {
     ByteArrayOutputStream buffer = new ByteArrayOutputStream();
     ByteStreams.copy(context.getInputStream(), buffer);
     byte[] bytes = buffer.toByteArray();
-    LOG.info("Received response: {}", new String(bytes, "UTF-8"));
+    LOG.debug("Received response: {}", new String(bytes, "UTF-8"));
     context.setInputStream(new ByteArrayInputStream(bytes));
     return context.proceed();
   }

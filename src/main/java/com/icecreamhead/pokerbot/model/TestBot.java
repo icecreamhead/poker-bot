@@ -39,14 +39,14 @@ public class TestBot implements Bot {
         return new PollForGameState(config.getBotId(), config.getBotPassword(), 5000, gameStateResponse.getPlayerKey());
 
       case SUCCESS:
-        return makeGameDecison(gameStateResponse.getPlayerKey(), gameStateResponse.getGameState());
+        return makeGameDecision(gameStateResponse.getPlayerKey(), gameStateResponse.getGameState());
 
       default:
         throw new RuntimeException(gameStateResponse.getResult().name());
     }
   }
 
-  private BotRequest makeGameDecison(UUID playerKey, GameState gameState) {
+  private BotRequest makeGameDecision(UUID playerKey, GameState gameState) {
     return null;
   }
 }

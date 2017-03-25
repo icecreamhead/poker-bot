@@ -38,6 +38,7 @@ public class BotRunner implements Runnable {
 
       switch (request.getAction()) {
         case NEW_GAME:
+          logger.info("Offering new game");
           response = pokerApi.offerGame((OfferGame) request);
           break;
       }

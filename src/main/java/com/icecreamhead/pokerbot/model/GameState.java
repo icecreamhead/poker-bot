@@ -2,39 +2,21 @@ package com.icecreamhead.pokerbot.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 public class GameState {
-  /*
-  {"GameStatus":"RUNNING",
-  "BigBlind":20,
-  "BoardCards":[],
-  "DealCount":10,
-  "DealNumber":1,
-  "IsDealer":true,
-  "MandatoryResponse":true,
-  "OpponentHand":["XX","XX"],
-  "OpponentRoundBetTotal":20,
-  "OpponentStack":981,
-  "PlayerHand":["TD","5S"],
-  "PlayerRoundBetTotal":10,
-  "PlayerStack":990,
-  "PotAfterPreviousRound":0,
-  "ResponseDeadline":"2017-03-25T17:03:19.412346Z",
-  "Round":0,"SmallBlind":10,
-  "GameId":437892,
-  "IsMover":true}
-   */
 
   private final GameStatus gameStatus;
   private final int bigBlind;
-  private final String[] boardCards;
+  private final List<Card> boardCards;
   private final int dealCount;
   private final int dealNumber;
   private final boolean dealer;
   private final boolean mandatoryResponse;
-  private final String[] opponentHand;
+  private final List<Card> opponentHand;
   private final int opponentRoundBetTotal;
   private final int opponentStack;
-  private final String[] playerHand;
+  private final List<Card> playerHand;
   private final int playerRoundBetTotal;
   private final int playerStack;
   private final int potAfterPreviousRound;
@@ -47,15 +29,15 @@ public class GameState {
   public GameState(
       @JsonProperty("GameStatus") GameStatus gameStatus,
       @JsonProperty("BigBlind") int bigBlind,
-      @JsonProperty("BoardCards") String[] boardCards,
+      @JsonProperty("BoardCards") List<Card> boardCards,
       @JsonProperty("DealCount") int dealCount,
       @JsonProperty("DealNumber") int dealNumber,
       @JsonProperty("IsDealer") boolean dealer,
       @JsonProperty("MandatoryResponse") boolean mandatoryResponse,
-      @JsonProperty("OpponentHand") String[] opponentHand,
+      @JsonProperty("OpponentHand") List<Card> opponentHand,
       @JsonProperty("OpponentRoundBetTotal") int opponentRoundBetTotal,
       @JsonProperty("OpponentStack") int opponentStack,
-      @JsonProperty("PlayerHand") String[] playerHand,
+      @JsonProperty("PlayerHand") List<Card> playerHand,
       @JsonProperty("PlayerRoundBetTotal") int playerRoundBetTotal,
       @JsonProperty("PlayerStack") int playerStack,
       @JsonProperty("PotAfterPreviousRound") int potAfterPreviousRound,
@@ -93,7 +75,7 @@ public class GameState {
     return bigBlind;
   }
 
-  public String[] getBoardCards() {
+  public List<Card> getBoardCards() {
     return boardCards;
   }
 
@@ -113,7 +95,7 @@ public class GameState {
     return mandatoryResponse;
   }
 
-  public String[] getOpponentHand() {
+  public List<Card> getOpponentHand() {
     return opponentHand;
   }
 
@@ -125,7 +107,7 @@ public class GameState {
     return opponentStack;
   }
 
-  public String[] getPlayerHand() {
+  public List<Card> getPlayerHand() {
     return playerHand;
   }
 

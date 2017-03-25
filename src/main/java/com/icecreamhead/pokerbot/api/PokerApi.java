@@ -1,6 +1,7 @@
 package com.icecreamhead.pokerbot.api;
 
 import com.icecreamhead.pokerbot.model.GameStateResponse;
+import com.icecreamhead.pokerbot.model.MakeMove;
 import com.icecreamhead.pokerbot.model.OfferGame;
 import com.icecreamhead.pokerbot.model.PollForGameState;
 
@@ -26,4 +27,9 @@ public interface PokerApi {
   @Consumes(APPLICATION_JSON)
   GameStateResponse pollForGameState(PollForGameState pollForGameState);
 
+  @POST
+  @Path("MakeMove")
+  @Produces(APPLICATION_JSON)
+  @Consumes(APPLICATION_JSON)
+  GameStateResponse makeMove(MakeMove makeMove);
 }

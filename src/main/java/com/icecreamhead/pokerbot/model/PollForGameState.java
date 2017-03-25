@@ -1,35 +1,21 @@
 package com.icecreamhead.pokerbot.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.UUID;
 
-public class PollForGameState implements BotRequest {
+public class PollForGameState extends AbstractBotRequest {
 
-  private final String BotId;
-  private final String BotPassword;
-  private final int MaximumWaitTime;
-  private final UUID playerKey;
+  private final int maximumWaitTime;
 
   public PollForGameState(String botId, String botPassword, int maximumWaitTime, UUID playerKey) {
-    BotId = botId;
-    BotPassword = botPassword;
-    MaximumWaitTime = maximumWaitTime;
-    this.playerKey = playerKey;
+    super(botId, botPassword, playerKey);
+    this.maximumWaitTime = maximumWaitTime;
   }
 
-  public String getBotId() {
-    return BotId;
-  }
-
-  public String getBotPassword() {
-    return BotPassword;
-  }
-
+  @JsonProperty("MaximumWaitTime")
   public int getMaximumWaitTime() {
-    return MaximumWaitTime;
-  }
-
-  public UUID getPlayerKey() {
-    return playerKey;
+    return maximumWaitTime;
   }
 
   public BotAction getAction() {

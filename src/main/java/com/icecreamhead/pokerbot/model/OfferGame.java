@@ -1,67 +1,52 @@
 package com.icecreamhead.pokerbot.model;
 
-public class OfferGame implements BotRequest {
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-  private final String BotId;
-  private final String BotPassword;
-  private final int MaximumWaitTime;
-  private final int GameStyleId;
-  private final boolean DontPlayAgainstSameUser;
-  private final boolean DontPlayAgainstSameBot;
-  private final String OpponentId;
+public class OfferGame extends AbstractBotRequest {
+
+  private final int maximumWaitTime;
+  private final int gameStyleId;
+  private final boolean dontPlayAgainstSameUser;
+  private final boolean dontPlayAgainstSameBot;
+  private final String opponentId;
 
   public OfferGame(String botId, String botPassword, int maximumWaitTime, int gameStyleId, boolean dontPlayAgainstSameUser, boolean dontPlayAgainstSameBot, String opponentId) {
-    BotId = botId;
-    BotPassword = botPassword;
-    MaximumWaitTime = maximumWaitTime;
-    GameStyleId = gameStyleId;
-    DontPlayAgainstSameUser = dontPlayAgainstSameUser;
-    DontPlayAgainstSameBot = dontPlayAgainstSameBot;
-    OpponentId = opponentId;
+    super(botId, botPassword, null);
+    this.maximumWaitTime = maximumWaitTime;
+    this.gameStyleId = gameStyleId;
+    this.dontPlayAgainstSameUser = dontPlayAgainstSameUser;
+    this.dontPlayAgainstSameBot = dontPlayAgainstSameBot;
+    this.opponentId = opponentId;
   }
 
-  public String getBotId() {
-    return BotId;
-  }
-
-  public String getBotPassword() {
-    return BotPassword;
-  }
-
+  @JsonProperty("MaximumWaitTime")
   public int getMaximumWaitTime() {
-    return MaximumWaitTime;
+    return maximumWaitTime;
   }
 
+  @JsonProperty("GameStyleId")
   public int getGameStyleId() {
-    return GameStyleId;
+    return gameStyleId;
   }
 
+  @JsonProperty("DontPlayAgainstSameUser")
   public boolean isDontPlayAgainstSameUser() {
-    return DontPlayAgainstSameUser;
+    return dontPlayAgainstSameUser;
   }
 
+  @JsonProperty("DontPlayAgainstSameBot")
   public boolean isDontPlayAgainstSameBot() {
-    return DontPlayAgainstSameBot;
+    return dontPlayAgainstSameBot;
   }
 
+  @JsonProperty("OpponentId")
   public String getOpponentId() {
-    return OpponentId;
+    return opponentId;
   }
 
+  @JsonIgnore
   public BotAction getAction() {
     return BotAction.NEW_GAME;
-  }
-
-  @Override
-  public String toString() {
-    return "OfferGame{" +
-        "BotId='" + BotId + '\'' +
-        ", BotPassword='" + BotPassword + '\'' +
-        ", MaximumWaitTime=" + MaximumWaitTime +
-        ", GameStyleId=" + GameStyleId +
-        ", DontPlayAgainstSameUser=" + DontPlayAgainstSameUser +
-        ", DontPlayAgainstSameBot=" + DontPlayAgainstSameBot +
-        ", OpponentId='" + OpponentId + '\'' +
-        '}';
   }
 }

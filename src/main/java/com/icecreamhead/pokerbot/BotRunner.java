@@ -28,8 +28,6 @@ public class BotRunner implements Runnable {
   }
 
   public void run() {
-    logger.info("Starting!");
-    // Attempt to connect!
 
     GameStateResponse response = null;
     Bot bot = botProvider.get();
@@ -41,11 +39,12 @@ public class BotRunner implements Runnable {
         break;
       }
 
-      pauseForDramaticEffect();
+      pauseForDramaticEffect(1000);
 
       switch (request.getAction()) {
         case NEW_GAME:
-          logger.info("Offering new game");
+          logger.info("About to start new game!");
+          pauseForDramaticEffect(3000);
           response = pokerApi.offerGame((OfferGame) request);
           break;
 
@@ -55,26 +54,24 @@ public class BotRunner implements Runnable {
           break;
 
         case MAKE_MOVE:
-          logger.info("Playing move: {}", ((MakeMove) request).getMove());
+//          logger.info("Playing move: {}", ((MakeMove) request).getMove());
           response = pokerApi.makeMove((MakeMove) request);
           break;
       }
 
-      if (response.getResult() == Result.GAME_HAS_ENDED ||
+      if (response.getResult() == Result.GAME_HAS_ENDED || response.getResult() == Result.CALL_ALREADY_IN_PROCESS ||
           (response.getGameState() != null && response.getGameState().getGameStatus().isEndState())) {
-        logger.info("Game has ended. Result: {}\n", response.getGameState().getGameStatus());
-        logger.info("Starting new game!");
+        logger.info("Game has ended. Result: {} {}-{}\n\n", response.getGameState().getGameStatus(), response.getGameState().getPlayerStack(), response.getGameState().getOpponentStack());
         response = null;
         bot = botProvider.get();
-        break;
       }
     }
   }
 
 
-  private void pauseForDramaticEffect() {
+  private void pauseForDramaticEffect(int millis) {
     try {
-      Thread.sleep(2000);
+      Thread.sleep(millis);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }

@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="INFO">
     <Appenders>
-        <Console name="out" target="SYSTEM_OUT">
+        <Console name="out" target="SYSTEM_OUT" ignoreExceptions="false">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{0} %msg%n" />
         </Console>
-        <Console name="err" target="SYSTEM_ERR">
+        <!--<Console name="err" target="SYSTEM_ERR">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level %class{0} %msg%n"/>
-        </Console>
+        </Console>-->
     </Appenders>
     <Loggers>
-        <Root level="debug">
+        <!--<Logger name="err-log" level="error" additivity="false">
+            <appender-ref ref="err" level="error"/>
+        </Logger>-->
+        <!--<Logger name="out-log" level="debug" additivity="false">
+            <appender-ref ref="out" level="debug"/>
+        </Logger>-->
+        <Root level="info" additivity="false">
             <AppenderRef ref="out"/>
-            <AppenderRef ref="err" level="warn"/>
+            <!--<AppenderRef ref="err"/>-->
         </Root>
     </Loggers>
 </Configuration>

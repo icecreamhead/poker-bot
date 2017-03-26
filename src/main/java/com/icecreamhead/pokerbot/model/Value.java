@@ -9,7 +9,7 @@ public enum Value {
   SIX("6"),
   SEVEN("7"),
   EIGHT("8"),
-  NINE("8"),
+  NINE("9"),
   TEN("T"),
   JACK("J"),
   QUEEN("Q"),

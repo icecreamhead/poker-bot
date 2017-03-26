@@ -7,10 +7,17 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.icecreamhead.pokerbot.model.HandUtil.hasFaceCard;
 import static com.icecreamhead.pokerbot.model.HandUtil.hasPair;
+import static com.icecreamhead.pokerbot.model.HandUtil.isFlush;
+import static com.icecreamhead.pokerbot.model.HandUtil.isFourOfAKind;
+import static com.icecreamhead.pokerbot.model.HandUtil.isStraight;
 import static com.icecreamhead.pokerbot.model.HandUtil.isSuited;
+import static com.icecreamhead.pokerbot.model.HandUtil.isThreeOfAKind;
+import static com.icecreamhead.pokerbot.model.HandUtil.isTwoPair;
 
 public class TestBot implements Bot {
 
@@ -43,7 +50,7 @@ public class TestBot implements Bot {
 
   private OfferGame offerGame() {
     return new OfferGame(botId, botpassword,
-        5000, 9, false, false, null);
+        5000, 10, false, false, null);
   }
 
   private AbstractBotRequest handleGameStateResponse(GameStateResponse gameStateResponse) {
@@ -55,7 +62,6 @@ public class TestBot implements Bot {
     switch (gameStateResponse.getResult()) {
       case NOT_YOUR_MOVE:
       case WAITING_FOR_GAME:
-      case CALL_ALREADY_IN_PROCESS:
         return waitForTurn();
 
       case SUCCESS:
@@ -79,33 +85,70 @@ public class TestBot implements Bot {
 
   private AbstractBotRequest makeGameDecision(GameState gameState) {
     logger.info("Making decision. Hand is {}. Board is {}", gameState.getPlayerHand(), gameState.getBoardCards());
-    int bet = calcBet(gameState.getPlayerHand(), gameState.getBoardCards());
+
+    int multiplier = 1;
+    if (gameState.getPlayerStack() + 100 < gameState.getOpponentStack()) {
+      logger.warn("I'm going for broke!");
+      multiplier = 3;
+    }
+
+    int bet = calcBet(gameState.getPlayerHand(), gameState.getBoardCards(), multiplier);
+
+    if (gameState.getPlayerStack() > gameState.getOpponentStack() + 60 && bet < 20) {
+      logger.info("I'm holding on the my lead!");
+      return bet(0);
+    }
 
     if (bet >= 0) {
-      logger.info("Decided to bet {}", bet);
+      logger.info("Decided to bet {}\n", bet);
       return bet(bet);
     }
 
-    logger.info("Decided to fold");
+    logger.info("Decided to fold\n");
     return fold();
   }
 
-  private int calcBet(List<Card> playerHand, List<Card> boardCards) {
+  private int calcBet(List<Card> playerHand, List<Card> boardCards, int multiplier) {
     int bet = 0;
 
     switch (boardCards.size()) {
       case 0:
+      case 1:
         if (hasFaceCard(playerHand)) {
-          bet += 5;
+          bet += 10;
         }
         if (hasPair(playerHand)) {
-          bet += 5;
+          bet += 10;
         }
 
         if (isSuited(playerHand)) {
-          bet += 5;
+          bet += 10;
         }
-        return bet;
+        return (bet * multiplier);
+      case 2:
+      case 3:
+        List<Card> allCards = Stream.concat(playerHand.stream(), boardCards.stream()).collect(Collectors.toList());
+        if (isFlush(allCards)) {
+          logger.info("Hand is a flush");
+          bet += 100;
+        }
+        if (isStraight(allCards)) {
+          logger.info("Hand is a straight");
+          bet += 50;
+        }
+        if (isFourOfAKind(allCards)) {
+          logger.info("Hand is four of a kind");
+          bet += 50;
+        }
+        if (isThreeOfAKind(allCards)) {
+          logger.info("Hand is three of a kind");
+          bet += 30;
+        }
+        if (isTwoPair(allCards)) {
+          logger.info("Hand is two pair");
+          bet += 20;
+        }
+        return bet * multiplier;
       default:
         return 0;
     }

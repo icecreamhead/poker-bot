@@ -1,5 +1,6 @@
 package com.icecreamhead.pokerbot.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -141,5 +142,10 @@ public class GameState {
 
   public boolean isMover() {
     return mover;
+  }
+
+  @JsonIgnore
+  public Hand getHand() {
+    return new Hand(playerHand, boardCards);
   }
 }

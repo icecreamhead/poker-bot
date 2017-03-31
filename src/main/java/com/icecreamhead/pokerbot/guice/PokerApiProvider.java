@@ -6,10 +6,6 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import com.icecreamhead.pokerbot.api.PokerApi;
 import com.icecreamhead.pokerbot.rest.MessageLogger;
 
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.jboss.resteasy.client.jaxrs.ClientHttpEngine;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
 import org.slf4j.Logger;
@@ -33,7 +29,7 @@ public class PokerApiProvider {
 
   PokerApi getPokerApi() {
     ResteasyClientBuilder resteasyClientBuilder = new ResteasyClientBuilder()
-        .httpEngine(httpEngine());
+        .httpEngine(new ApacheHttpClient4Engine());
 
     resteasyClientBuilder.register(new JacksonJsonProvider());
     resteasyClientBuilder.register(new MessageLogger());
@@ -41,20 +37,6 @@ public class PokerApiProvider {
     PokerApi pokerApi = resteasyClientBuilder.build().target(apiConfig.getApiUri()).proxy(pokerApiClass);
     MethodExecutor methodExecutor = new MethodExecutor(pokerApi);
     return pokerApiClass.cast(Proxy.newProxyInstance(pokerApiClass.getClassLoader(), new Class<?>[]{pokerApiClass}, methodExecutor));
-  }
-
-  private static ClientHttpEngine httpEngine() {
-    RequestConfig requestConfig = RequestConfig.custom()
-        .setConnectionRequestTimeout(10000)
-        .setConnectTimeout(3000)
-        .setSocketTimeout(3000)
-        .build();
-
-    HttpClient httpClient = HttpClientBuilder.create()
-        .setDefaultRequestConfig(requestConfig)
-        .build();
-
-    return new ApacheHttpClient4Engine(httpClient);
   }
 
   private static class MethodExecutor implements InvocationHandler {
@@ -66,7 +48,18 @@ public class PokerApiProvider {
     }
 
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-      return method.invoke(target, args);
+      int i = 0;
+      while (true) {
+        try {
+          return method.invoke(target, args);
+        } catch (Exception ex) {
+          logger.error("Failed to call method {}", method.getName(), ex);
+          i++;
+          if (i >= 3) {
+            throw ex;
+          }
+        }
+      }
     }
   }
 

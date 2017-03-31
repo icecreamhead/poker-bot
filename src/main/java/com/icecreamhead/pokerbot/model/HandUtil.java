@@ -13,6 +13,10 @@ public class HandUtil {
     return cards.stream().map(Card::getValue).anyMatch(FACE_CARDS::contains);
   }
 
+  public static boolean hasTwoFaceCards(List<Card> cards) {
+    return cards.stream().map(Card::getValue).filter(FACE_CARDS::contains).count() >= 2;
+  }
+
   public static boolean hasPair(List<Card> cards) {
     return cards.stream().map(Card::getValue).count() != cards.stream().map(Card::getValue).distinct().count();
   }

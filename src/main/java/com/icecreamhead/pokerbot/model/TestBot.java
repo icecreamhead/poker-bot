@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 import static com.icecreamhead.pokerbot.model.HandUtil.hasFaceCard;
 import static com.icecreamhead.pokerbot.model.HandUtil.hasPair;
+import static com.icecreamhead.pokerbot.model.HandUtil.hasTwoFaceCards;
 import static com.icecreamhead.pokerbot.model.HandUtil.isFlush;
 import static com.icecreamhead.pokerbot.model.HandUtil.isFourOfAKind;
 import static com.icecreamhead.pokerbot.model.HandUtil.isStraight;
@@ -50,7 +51,7 @@ public class TestBot implements Bot {
 
   private OfferGame offerGame() {
     return new OfferGame(botId, botpassword,
-        5000, 10, false, false, null);
+        5000, 14, false, false, null);
   }
 
   private AbstractBotRequest handleGameStateResponse(GameStateResponse gameStateResponse) {
@@ -88,7 +89,7 @@ public class TestBot implements Bot {
 
     int multiplier = 1;
     if (gameState.getPlayerStack() + 100 < gameState.getOpponentStack()) {
-      logger.warn("I'm going for broke!");
+      logger.info("I'm going for broke!");
       multiplier = 3;
     }
 
@@ -113,20 +114,23 @@ public class TestBot implements Bot {
 
     switch (boardCards.size()) {
       case 0:
-      case 1:
+        if (hasTwoFaceCards(playerHand)) {
+          bet += 50;
+        }
         if (hasFaceCard(playerHand)) {
-          bet += 10;
+          bet += 30;
         }
         if (hasPair(playerHand)) {
-          bet += 10;
+          bet += 30;
         }
 
         if (isSuited(playerHand)) {
-          bet += 10;
+          bet += 30;
         }
-        return (bet * multiplier);
-      case 2:
+        return bet * multiplier;
       case 3:
+      case 4:
+      case 5:
         List<Card> allCards = Stream.concat(playerHand.stream(), boardCards.stream()).collect(Collectors.toList());
         if (isFlush(allCards)) {
           logger.info("Hand is a flush");

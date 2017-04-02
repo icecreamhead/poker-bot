@@ -34,7 +34,7 @@ public class PokerApiProvider {
     resteasyClientBuilder.register(new JacksonJsonProvider());
     resteasyClientBuilder.register(new MessageLogger());
 
-    PokerApi pokerApi = resteasyClientBuilder.build().target(apiConfig.getApiUri()).proxy(pokerApiClass);
+    PokerApi pokerApi = resteasyClientBuilder.build().target(apiConfig.getApiUrl()).proxy(pokerApiClass);
     MethodExecutor methodExecutor = new MethodExecutor(pokerApi);
     return pokerApiClass.cast(Proxy.newProxyInstance(pokerApiClass.getClassLoader(), new Class<?>[]{pokerApiClass}, methodExecutor));
   }

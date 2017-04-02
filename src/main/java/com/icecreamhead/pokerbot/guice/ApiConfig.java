@@ -1,17 +1,24 @@
 package com.icecreamhead.pokerbot.guice;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import static com.icecreamhead.pokerbot.guice.Property.API_URL;
+
+@Singleton
 public class ApiConfig {
 
-  private final URI hostname;
+    private final URI apiUrl;
 
-  public ApiConfig() throws URISyntaxException {
-    this.hostname = new URI("http://beta.aigaming.com");
-  }
+    @Inject
+    public ApiConfig(@Config(value = API_URL) String apiUrl) throws URISyntaxException {
+        this.apiUrl = new URI(apiUrl);
+    }
 
-  public URI getApiUri() {
-    return hostname;
-  }
+    public URI getApiUrl() {
+        return apiUrl;
+    }
 }

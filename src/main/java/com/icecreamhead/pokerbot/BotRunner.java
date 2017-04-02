@@ -4,13 +4,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 import com.icecreamhead.pokerbot.api.PokerApi;
-import com.icecreamhead.pokerbot.model.AbstractBotRequest;
-import com.icecreamhead.pokerbot.model.Bot;
-import com.icecreamhead.pokerbot.model.GameStateResponse;
-import com.icecreamhead.pokerbot.model.MakeMove;
-import com.icecreamhead.pokerbot.model.OfferGame;
-import com.icecreamhead.pokerbot.model.PollForGameState;
-import com.icecreamhead.pokerbot.model.Result;
+import com.icecreamhead.pokerbot.model.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +26,7 @@ public class BotRunner implements Runnable {
   }
 
   public void run() {
-
+    boolean waiting = true;
     GameStateResponse response = null;
     Bot bot = botProvider.get();
     while (true) {
@@ -49,17 +43,23 @@ public class BotRunner implements Runnable {
         switch (request.getAction()) {
           case NEW_GAME:
             logger.warn("About to start new game!");
+            waiting = true;
 //          pauseForDramaticEffect(1000);
             response = pokerApi.offerGame((OfferGame) request);
             break;
 
           case POLL_FOR_GAME_STATE:
-            logger.warn("Waiting for game...");
             pauseForDramaticEffect(2000);
             response = pokerApi.pollForGameState((PollForGameState) request);
+            if (response.getResult() == Result.WAITING_FOR_GAME)
+              logger.warn("Waiting for game...");
             break;
 
           case MAKE_MOVE:
+            if (waiting) {
+              logger.warn("Found a game!");
+              waiting = false;
+            }
 //          logger.info("Playing move: {}", ((MakeMove) request).getMove());
             response = pokerApi.makeMove((MakeMove) request);
             break;
@@ -87,7 +87,7 @@ public class BotRunner implements Runnable {
           bot = botProvider.get();
         }
       } catch (Exception ex) {
-        logger.warn("Bot died :( Starting again");
+        logger.error("Bot died :( Starting again", ex);
       }
     }
   }

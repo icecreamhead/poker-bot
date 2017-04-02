@@ -60,6 +60,11 @@
             <artifactId>slf4j-log4j12</artifactId>
             <version>1.7.25</version>
         </dependency>
+        <dependency>
+            <groupId>org.bitbucket.strangerintheq</groupId>
+            <artifactId>guice-config</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -67,7 +72,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>(whatever version is current)</version>
+                <version>3.5.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -76,5 +81,11 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>org.bitbucket.strangerintheq</id>
+            <url>https://bitbucket.org/strangerintheq/guice-config/raw/master/repository/</url>
+        </repository>
+    </repositories>
 
 </project>

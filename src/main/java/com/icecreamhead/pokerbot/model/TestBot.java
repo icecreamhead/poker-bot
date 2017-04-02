@@ -51,7 +51,7 @@ public class TestBot implements Bot {
 
   private OfferGame offerGame() {
     return new OfferGame(botId, botpassword,
-        5000, 14, false, false, null);
+        5000, 10, false, false, null);
   }
 
   private AbstractBotRequest handleGameStateResponse(GameStateResponse gameStateResponse) {

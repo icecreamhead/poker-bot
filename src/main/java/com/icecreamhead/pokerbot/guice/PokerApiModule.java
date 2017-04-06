@@ -5,6 +5,7 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import com.icecreamhead.pokerbot.api.PokerApi;
 import com.icecreamhead.pokerbot.model.Bot;
+import com.icecreamhead.pokerbot.model.BotConfig;
 import com.icecreamhead.pokerbot.model.TestBot;
 
 public class PokerApiModule extends AbstractModule {
@@ -14,7 +15,7 @@ public class PokerApiModule extends AbstractModule {
 //    bind(MessageLogger.class);
 
     bind(Bot.class).to(TestBot.class);
-//    bind(BotConfig.class);
+    bind(BotConfig.class);
   }
 
   @Provides

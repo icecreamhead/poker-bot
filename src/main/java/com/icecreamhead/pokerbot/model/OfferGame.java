@@ -2,7 +2,10 @@ package com.icecreamhead.pokerbot.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 public class OfferGame extends AbstractBotRequest {
 
   private final int maximumWaitTime;
@@ -11,13 +14,14 @@ public class OfferGame extends AbstractBotRequest {
   private final boolean dontPlayAgainstSameBot;
   private final String opponentId;
 
-  public OfferGame(String botId, String botPassword, int maximumWaitTime, int gameStyleId, boolean dontPlayAgainstSameUser, boolean dontPlayAgainstSameBot, String opponentId) {
-    super(botId, botPassword, null);
-    this.maximumWaitTime = maximumWaitTime;
-    this.gameStyleId = gameStyleId;
-    this.dontPlayAgainstSameUser = dontPlayAgainstSameUser;
-    this.dontPlayAgainstSameBot = dontPlayAgainstSameBot;
-    this.opponentId = opponentId;
+  @Inject
+  public OfferGame(BotConfig botConfig) {
+    super(botConfig.getBotId(), botConfig.getBotPassword(), null);
+    this.maximumWaitTime = botConfig.getMaxWaitTime();
+    this.gameStyleId = botConfig.getGameStyle();
+    this.dontPlayAgainstSameUser = botConfig.isDontPlaySelfUser();
+    this.dontPlayAgainstSameBot = botConfig.isDontPlaySelfBot();
+    this.opponentId = botConfig.getOppenentId();
   }
 
   @JsonProperty("MaximumWaitTime")

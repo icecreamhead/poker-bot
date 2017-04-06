@@ -26,19 +26,21 @@ public class TestBot implements Bot {
 
   private final String botId;
   private final String botpassword;
+  private final OfferGame offerGame;
 
   private UUID playerKey;
 
   @Inject
-  public TestBot(BotConfig config) {
+  public TestBot(BotConfig config, OfferGame offerGame) {
     this.botId = config.getBotId();
     this.botpassword = config.getBotPassword();
+    this.offerGame = offerGame;
   }
 
   @Override
   public AbstractBotRequest handleResponse(ServerResponse response) {
     if (response == null) {
-      return offerGame();
+      return offerGame;
     }
 
     switch (response.getResponseType()) {
@@ -47,11 +49,6 @@ public class TestBot implements Bot {
     }
 
     return null;
-  }
-
-  private OfferGame offerGame() {
-    return new OfferGame(botId, botpassword,
-        5000, 10, false, false, null);
   }
 
   private AbstractBotRequest handleGameStateResponse(GameStateResponse gameStateResponse) {

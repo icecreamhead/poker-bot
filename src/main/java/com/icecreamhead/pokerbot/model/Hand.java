@@ -3,7 +3,12 @@ package com.icecreamhead.pokerbot.model;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.Function;
+
+import static com.icecreamhead.pokerbot.model.HandUtil.STRAIGHTS;
+import static java.util.stream.Collectors.*;
+import static java.util.stream.Stream.concat;
+import static java.util.stream.Stream.of;
 
 public class Hand {
   private final Card hole1;
@@ -13,7 +18,13 @@ public class Hand {
   public Hand(List<Card> hole, List<Card> shared) {
     this.hole1 = hole.get(0);
     this.hole2 = hole.get(1);
-    this.shared = shared;
+    this.shared = ImmutableList.copyOf(shared);
+  }
+
+  public Hand(Card hole1, Card hole2, List<Card> shared) {
+    this.hole1 = hole1;
+    this.hole2 = hole2;
+    this.shared = ImmutableList.copyOf(shared);
   }
 
   public List<Card> getHole() {
@@ -32,12 +43,81 @@ public class Hand {
     return shared;
   }
 
+  public boolean isPair() {
+    return hasMatching(Card::getValue, 2, 1);
+  }
+
   public boolean isHolePair() {
     return hole1.getValue() == hole2.getValue();
   }
 
   public boolean isHiddenPair() {
-    List<Value> sharedValues = shared.stream().map(Card::getValue).collect(Collectors.toList());
-    return sharedValues.contains(hole1.getValue()) || sharedValues.contains(hole2.getValue());
+    return isPair() && hole1.getValue() != hole2.getValue() && !isSharedPair();
   }
-}
+  public boolean isSharedPair() {
+    return shared.stream().collect(groupingBy(Card::getValue, counting()))
+            .values().stream()
+            .filter(l -> l >= 2)
+            .count() >= 1;
+  }
+
+  public boolean isTwoPair() {
+    if (shared.size() < 2) {
+      return false;
+    }
+    return hasMatching(Card::getValue, 2, 2);
+  }
+
+  public boolean isThreeOfAKind() {
+    if (shared.isEmpty()) {
+      return false;
+    }
+    return hasMatching(Card::getValue, 3, 1);
+  }
+
+  public boolean isStraight() {
+    if (shared.size() < 3) {
+      return false;
+    }
+    List<Value> cardValues = concat(shared.stream(), of(hole1, hole2)).map(Card::getValue).collect(toList());
+    for (List<Value> straight : STRAIGHTS) {
+      if (cardValues.containsAll(straight)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean isFlush() {
+    if (shared.size() < 3) {
+      return false;
+    }
+    return hasMatching(Card::getSuit, 5, 1);
+  }
+
+  public boolean isFullHouse() {
+    if (shared.size() < 3) {
+      return false;
+    }
+    return isThreeOfAKind() && hasMatching(Card::getValue, 2, 2);
+  }
+
+  public boolean isFourOfAKind() {
+    if (shared.size() < 2) {
+      return false;
+    }
+    return hasMatching(Card::getValue, 4, 1);
+  }
+
+  public boolean isStraightFlush() {
+    return isStraight() && isFlush();
+  }
+
+  private boolean hasMatching(Function<Card,Object> mapper, int matchingCount, int numberRequired) {
+    return concat(shared.stream(), of(hole1, hole2))
+            .collect(groupingBy(mapper, counting()))
+            .values().stream()
+            .filter(l -> l >= matchingCount)
+            .count() >= numberRequired;
+  }
+ }

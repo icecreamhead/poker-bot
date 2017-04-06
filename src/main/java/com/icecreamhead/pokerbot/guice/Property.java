@@ -7,5 +7,12 @@ package com.icecreamhead.pokerbot.guice;
  * Time: 15:39
  */
 public enum Property {
-    API_URL
+    API_URL,
+    BOT_ID,
+    BOT_PASSWORD,
+    GAME_STYLE,
+    MAXIMUM_WAIT_TIME,
+    DONT_PLAY_SELF_USER,
+    DONT_PLAY_SELF_BOT,
+    OPPONENT_ID
 }

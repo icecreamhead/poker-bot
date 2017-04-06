@@ -14,7 +14,7 @@ public class ApiConfig {
     private final URI apiUrl;
 
     @Inject
-    public ApiConfig(@Config(value = API_URL) String apiUrl) throws URISyntaxException {
+    public ApiConfig(@Config(API_URL) String apiUrl) throws URISyntaxException {
         this.apiUrl = new URI(apiUrl);
     }
 

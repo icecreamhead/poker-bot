@@ -8,8 +8,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @BindingAnnotation
-@Retention( RetentionPolicy.RUNTIME )
-@Target( { ElementType.FIELD, ElementType.PARAMETER } )
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.PARAMETER})
 public @interface Config {
     Property value();
 }

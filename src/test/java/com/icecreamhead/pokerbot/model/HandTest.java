@@ -107,8 +107,7 @@ public class HandTest {
         assertThat(of("AH", "2C", "3D", "4D", "7D", "6D", "8D").isStraightFlush()).isFalse();
         assertThat(of("AD", "KD", "QD", "JD", "TD", "2S").isStraightFlush()).isTrue();
 
-        // todo fix this
-//        assertThat(of("AD", "KC", "QD", "JD", "TD", "2D").isStraightFlush()).isFalse();
+        assertThat(of("AD", "KC", "QD", "JD", "TD", "2D").isStraightFlush()).isFalse();
     }
 
     private static Card c(String cardString) {

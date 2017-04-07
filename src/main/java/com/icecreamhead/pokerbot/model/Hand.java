@@ -3,12 +3,16 @@ package com.icecreamhead.pokerbot.model;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import static com.icecreamhead.pokerbot.model.HandUtil.STRAIGHTS;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.of;
+import static org.assertj.core.util.Lists.emptyList;
 
 public class Hand {
   private final Card hole1;
@@ -110,7 +114,30 @@ public class Hand {
   }
 
   public boolean isStraightFlush() {
-    return isStraight() && isFlush();
+    List<Card> suited = suitedCards();
+    if (suited.size() < 5) {
+      return false;
+    }
+    List<Value> values = suited.stream().map(Card::getValue).collect(toList());
+    for (List<Value> straight : STRAIGHTS) {
+      if (values.containsAll(straight)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private List<Card> suitedCards() {
+    if (shared.size() < 3) {
+      return emptyList();
+    }
+    Map<Suit, List<Card>> suits = concat(shared.stream(), of(hole1, hole2)).collect(groupingBy(Card::getSuit));
+    for (Map.Entry<Suit, List<Card>> entry : suits.entrySet()) {
+      if (entry.getValue().size() >= 5) {
+        return entry.getValue();
+      }
+    }
+    return emptyList();
   }
 
   private boolean hasMatching(Function<Card,Object> mapper, int matchingCount, int numberRequired) {

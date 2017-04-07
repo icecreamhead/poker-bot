@@ -82,7 +82,8 @@ public class TestBot implements Bot {
   }
 
   private AbstractBotRequest makeGameDecision(GameState gameState) {
-    logger.info("Making decision. Hand is {}. Board is {}", gameState.getPlayerHand(), gameState.getBoardCards());
+    Hand hand = gameState.getHand();
+    logger.info("Making decision. State is {}: {}", hand.bettingRound(), hand.toString());
 
     int multiplier = 1;
     if (gameState.getPlayerStack() + 100 < gameState.getOpponentStack()) {

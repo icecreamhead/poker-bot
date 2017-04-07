@@ -58,11 +58,12 @@ public class Hand {
   public boolean isHiddenPair() {
     return isPair() && hole1.getValue() != hole2.getValue() && !isSharedPair();
   }
+
   public boolean isSharedPair() {
     return shared.stream().collect(groupingBy(Card::getValue, counting()))
-            .values().stream()
-            .filter(l -> l >= 2)
-            .count() >= 1;
+        .values().stream()
+        .filter(l -> l >= 2)
+        .count() >= 1;
   }
 
   public boolean isTwoPair() {
@@ -127,6 +128,20 @@ public class Hand {
     return false;
   }
 
+  public BettingRound bettingRound() {
+    switch (shared.size()) {
+      case 0:
+        return BettingRound.PRE_FLOP;
+      case 3:
+        return BettingRound.FLOP;
+      case 4:
+        return BettingRound.TURN;
+      case 5:
+        return BettingRound.RIVER;
+    }
+    throw new IllegalStateException();
+  }
+
   private List<Card> suitedCards() {
     if (shared.size() < 3) {
       return emptyList();
@@ -140,11 +155,16 @@ public class Hand {
     return emptyList();
   }
 
-  private boolean hasMatching(Function<Card,Object> mapper, int matchingCount, int numberRequired) {
+  private boolean hasMatching(Function<Card, Object> mapper, int matchingCount, int numberRequired) {
     return concat(shared.stream(), of(hole1, hole2))
-            .collect(groupingBy(mapper, counting()))
-            .values().stream()
-            .filter(l -> l >= matchingCount)
-            .count() >= numberRequired;
+        .collect(groupingBy(mapper, counting()))
+        .values().stream()
+        .filter(l -> l >= matchingCount)
+        .count() >= numberRequired;
   }
- }
+
+  @Override
+  public String toString() {
+    return "[" + hole1 + "," + hole2 + "] " + shared;
+  }
+}

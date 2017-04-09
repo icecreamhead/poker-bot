@@ -15,6 +15,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 public class PokerApiProvider {
   private static final Logger logger = LoggerFactory.getLogger(PokerApiProvider.class);
 
@@ -29,6 +31,9 @@ public class PokerApiProvider {
 
   PokerApi getPokerApi() {
     ResteasyClientBuilder resteasyClientBuilder = new ResteasyClientBuilder()
+        .socketTimeout(3, SECONDS)
+        .establishConnectionTimeout(3, SECONDS)
+        .connectionCheckoutTimeout(3, SECONDS)
         .httpEngine(new ApacheHttpClient4Engine());
 
     resteasyClientBuilder.register(new JacksonJsonProvider());

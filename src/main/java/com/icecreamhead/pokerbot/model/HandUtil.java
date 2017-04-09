@@ -5,9 +5,23 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.icecreamhead.pokerbot.model.Value.ACE;
+import static com.icecreamhead.pokerbot.model.Value.EIGHT;
+import static com.icecreamhead.pokerbot.model.Value.FIVE;
+import static com.icecreamhead.pokerbot.model.Value.FOUR;
+import static com.icecreamhead.pokerbot.model.Value.JACK;
+import static com.icecreamhead.pokerbot.model.Value.KING;
+import static com.icecreamhead.pokerbot.model.Value.NINE;
+import static com.icecreamhead.pokerbot.model.Value.QUEEN;
+import static com.icecreamhead.pokerbot.model.Value.SEVEN;
+import static com.icecreamhead.pokerbot.model.Value.SIX;
+import static com.icecreamhead.pokerbot.model.Value.TEN;
+import static com.icecreamhead.pokerbot.model.Value.THREE;
+import static com.icecreamhead.pokerbot.model.Value.TWO;
+
 public class HandUtil {
 
-  public static final ImmutableList<Value> FACE_CARDS = ImmutableList.of(Value.TEN, Value.JACK, Value.QUEEN, Value.KING, Value.ACE);
+  public static final ImmutableList<Value> FACE_CARDS = ImmutableList.of(TEN, JACK, QUEEN, KING, ACE);
 
   public static boolean hasFaceCard(List<Card> cards) {
     return cards.stream().map(Card::getValue).anyMatch(FACE_CARDS::contains);
@@ -55,15 +69,17 @@ public class HandUtil {
   }
 
   public static final List<List<Value>> STRAIGHTS = ImmutableList.of(
-      ImmutableList.of(Value.ACE, Value.TWO, Value.THREE, Value.FOUR, Value.FIVE),
-      ImmutableList.of(Value.TWO, Value.THREE, Value.FOUR, Value.FIVE, Value.SIX),
-      ImmutableList.of(Value.THREE, Value.FOUR, Value.FIVE, Value.SIX, Value.SEVEN),
-      ImmutableList.of(Value.FOUR, Value.FIVE, Value.SIX, Value.SEVEN, Value.EIGHT),
-      ImmutableList.of(Value.FIVE, Value.SIX, Value.SEVEN, Value.EIGHT, Value.NINE),
-      ImmutableList.of(Value.SIX, Value.SEVEN, Value.EIGHT, Value.NINE, Value.TEN),
-      ImmutableList.of(Value.SEVEN, Value.EIGHT, Value.NINE, Value.TEN, Value.JACK),
-      ImmutableList.of(Value.EIGHT, Value.NINE, Value.TEN, Value.JACK, Value.QUEEN),
-      ImmutableList.of(Value.NINE, Value.TEN, Value.JACK, Value.QUEEN, Value.KING),
-      ImmutableList.of(Value.TEN, Value.JACK, Value.QUEEN, Value.KING, Value.ACE)
+      ImmutableList.of(ACE, TWO, THREE, FOUR, FIVE),
+      ImmutableList.of(TWO, THREE, FOUR, FIVE, SIX),
+      ImmutableList.of(THREE, FOUR, FIVE, SIX, SEVEN),
+      ImmutableList.of(FOUR, FIVE, SIX, SEVEN, EIGHT),
+      ImmutableList.of(FIVE, SIX, SEVEN, EIGHT, NINE),
+      ImmutableList.of(SIX, SEVEN, EIGHT, NINE, TEN),
+      ImmutableList.of(SEVEN, EIGHT, NINE, TEN, JACK),
+      ImmutableList.of(EIGHT, NINE, TEN, JACK, QUEEN),
+      ImmutableList.of(NINE, TEN, JACK, QUEEN, KING),
+      ImmutableList.of(TEN, JACK, QUEEN, KING, ACE)
   );
+
+  public static final List<Value> PICTURE_CARDS = ImmutableList.of(JACK, QUEEN, KING, ACE);
 }

@@ -1,5 +1,7 @@
 package com.icecreamhead.pokerbot.model;
 
+import static com.icecreamhead.pokerbot.model.HandUtil.PICTURE_CARDS;
+
 public class Card {
 
   private final Suit suit;
@@ -21,6 +23,10 @@ public class Card {
 
   public Value getValue() {
     return value;
+  }
+
+  public boolean isPictureCard() {
+    return PICTURE_CARDS.contains(value);
   }
 
   @Override

@@ -55,6 +55,18 @@ public class Hand {
     return hole1.getValue() == hole2.getValue();
   }
 
+  public boolean isHoleSuited() {
+    return hole1.getSuit() == hole2.getSuit();
+  }
+
+  public boolean isHoleSuitedPair() {
+    return isHolePair() && isHoleSuited();
+  }
+
+  public boolean isHolePictureCard() {
+    return getHole().stream().filter(Card::isPictureCard).count() > 0;
+  }
+
   public boolean isHiddenPair() {
     return isPair() && hole1.getValue() != hole2.getValue() && !isSharedPair();
   }

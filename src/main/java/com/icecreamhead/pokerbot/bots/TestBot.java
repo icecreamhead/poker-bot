@@ -1,12 +1,17 @@
-package com.icecreamhead.pokerbot.model;
+package com.icecreamhead.pokerbot.bots;
 
 import com.google.inject.Inject;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.icecreamhead.pokerbot.model.AbstractBot;
+import com.icecreamhead.pokerbot.model.AbstractBotRequest;
+import com.icecreamhead.pokerbot.model.Bot;
+import com.icecreamhead.pokerbot.model.BotConfig;
+import com.icecreamhead.pokerbot.model.Card;
+import com.icecreamhead.pokerbot.model.GameState;
+import com.icecreamhead.pokerbot.model.Hand;
+import com.icecreamhead.pokerbot.model.OfferGame;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,68 +25,15 @@ import static com.icecreamhead.pokerbot.model.HandUtil.isSuited;
 import static com.icecreamhead.pokerbot.model.HandUtil.isThreeOfAKind;
 import static com.icecreamhead.pokerbot.model.HandUtil.isTwoPair;
 
-public class TestBot implements Bot {
-
-  private static final Logger logger = LoggerFactory.getLogger(TestBot.class);
-
-  private final String botId;
-  private final String botpassword;
-  private final OfferGame offerGame;
-
-  private UUID playerKey;
+public class TestBot extends AbstractBot implements Bot {
 
   @Inject
   public TestBot(BotConfig config, OfferGame offerGame) {
-    this.botId = config.getBotId();
-    this.botpassword = config.getBotPassword();
-    this.offerGame = offerGame;
+    super(config, offerGame);
   }
 
   @Override
-  public AbstractBotRequest handleResponse(ServerResponse response) {
-    if (response == null) {
-      return offerGame;
-    }
-
-    switch (response.getResponseType()) {
-      case OFFER_GAME_RESPONSE:
-        return handleGameStateResponse((GameStateResponse) response);
-    }
-
-    return null;
-  }
-
-  private AbstractBotRequest handleGameStateResponse(GameStateResponse gameStateResponse) {
-    logger.info("Handling game state: {}", gameStateResponse.getResult());
-    if (gameStateResponse.getPlayerKey() != null) {
-      playerKey = gameStateResponse.getPlayerKey();
-    }
-
-    switch (gameStateResponse.getResult()) {
-      case NOT_YOUR_MOVE:
-      case WAITING_FOR_GAME:
-        return waitForTurn();
-
-      case SUCCESS:
-        if (gameStateResponse.getGameState().isMover()) {
-          return makeGameDecision(gameStateResponse.getGameState());
-        } else {
-          return waitForTurn();
-        }
-
-      case INVALID_MOVE:
-        return fold();
-
-      default:
-        throw new RuntimeException(gameStateResponse.getResult().name());
-    }
-  }
-
-  private AbstractBotRequest waitForTurn() {
-    return new PollForGameState(botId, botpassword, 5000, playerKey);
-  }
-
-  private AbstractBotRequest makeGameDecision(GameState gameState) {
+  protected AbstractBotRequest makeGameDecision(GameState gameState) {
     Hand hand = gameState.getHand();
     logger.info("Making decision. State is {}: {}", hand.bettingRound(), hand.toString());
 
@@ -103,8 +55,8 @@ public class TestBot implements Bot {
       return bet(bet);
     }
 
-    logger.info("Decided to fold\n");
-    return fold();
+    logger.info("Decided to checkOrFold\n");
+    return checkOrFold();
   }
 
   private int calcBet(List<Card> playerHand, List<Card> boardCards, int multiplier) {
@@ -156,14 +108,6 @@ public class TestBot implements Bot {
     }
 
 //    return -1;
-  }
-
-  private MakeMove fold() {
-    return new MakeMove(botId, botpassword, playerKey, new Move(true, 0));
-  }
-
-  private MakeMove bet(int bet) {
-    return new MakeMove(botId, botpassword, playerKey, new Move(false, bet));
   }
 
 }

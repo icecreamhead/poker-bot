@@ -32,7 +32,10 @@ public abstract class AbstractBot implements Bot {
 
       case SUCCESS:
         if (gameStateResponse.getGameState().isMover()) {
-          return makeGameDecision(gameStateResponse.getGameState());
+          logger.info("Your move. Board is {}", gameStateResponse.getGameState().getHand());
+          AbstractBotRequest decision = makeGameDecision(gameStateResponse.getGameState());
+          logger.debug("Bot decision: {}", decision);
+          return decision;
         } else {
           return waitForTurn();
         }

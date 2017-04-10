@@ -4,7 +4,13 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 
 import com.icecreamhead.pokerbot.api.PokerApi;
-import com.icecreamhead.pokerbot.model.*;
+import com.icecreamhead.pokerbot.model.AbstractBotRequest;
+import com.icecreamhead.pokerbot.model.Bot;
+import com.icecreamhead.pokerbot.model.GameStateResponse;
+import com.icecreamhead.pokerbot.model.MakeMove;
+import com.icecreamhead.pokerbot.model.OfferGame;
+import com.icecreamhead.pokerbot.model.PollForGameState;
+import com.icecreamhead.pokerbot.model.Result;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +24,7 @@ public class BotRunner implements Runnable {
   private int won = 0;
   private int drawn = 0;
   private int lost = 0;
+  private int round = -1;
 
   @Inject
   public BotRunner(Provider<Bot> botProvider, PokerApi pokerApi) {
@@ -31,6 +38,12 @@ public class BotRunner implements Runnable {
     Bot bot = botProvider.get();
     while (true) {
       try {
+        if (response != null && response.getGameState() != null) {
+          if (round != response.getGameState().getRound()) {
+            round = response.getGameState().getRound();
+            logger.info("Round {}", round);
+          }
+        }
         AbstractBotRequest request = bot.handleResponse(response);
 
         if (request == null) {

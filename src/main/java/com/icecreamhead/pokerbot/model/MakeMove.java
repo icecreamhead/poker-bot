@@ -19,4 +19,9 @@ public class MakeMove extends AbstractBotRequest {
   public BotAction getAction() {
     return BotAction.MAKE_MOVE;
   }
+
+  @Override
+  public String toString() {
+    return move.toString();
+  }
 }
